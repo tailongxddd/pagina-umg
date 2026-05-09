@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFix Pro — Servicios Técnicos de Informática</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'eblue': '#0066FF',
+                        'eblue-dark': '#0052CC',
+                        'cyan-a': '#00D4FF',
+                        'dark-bg': '#06060C',
+                        'dark-s': '#0D0D18',
+                        'dark-card': '#12121F',
+                        'dark-border': '#1E1E35',
+                    },
+                    fontFamily: {
+                        'space': ['"Space Grotesk"', 'sans-serif'],
+                        'inter': ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#06060C;color:#fff;overflow-x:hidden}
+        ::selection{background:#0066FF;color:#fff}
+        ::-webkit-scrollbar{width:6px}
+        ::-webkit-scrollbar-track{background:#06060C}
+        ::-webkit-scrollbar-thumb{background:#0066FF;border-radius:3px}
+
+        /* ── Animaciones ── */
+        @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @keyframes pulse-ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(2.2);opacity:0}}
+        @keyframes glow-pulse{0%,100%{box-shadow:0 0 20px rgba(0,102,255,.3)}50%{box-shadow:0 0 40px rgba(0,102,255,.6)}}
+        @keyframes orbit{0%{transform:rotate(0deg) translateX(110px) rotate(0deg)}100%{transform:rotate(360deg) translateX(110px) rotate(-360deg)}}
+        @keyframes orbit2{0%{transform:rotate(120deg) translateX(160px) rotate(-120deg)}100%{transform:rotate(480deg) translateX(160px) rotate(-480deg)}}
+        @keyframes orbit3{0%{transform:rotate(240deg) translateX(80px) rotate(-240deg)}100%{transform:rotate(600deg) translateX(80px) rotate(-600deg)}}
+        @keyframes dash{to{stroke-dashoffset:0}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        @keyframes typing{0%{width:0}50%{width:60px}100%{width:0}}
+        @keyframes scanline{0%{top:-100%}100%{top:200%}}
+        @keyframes grid-move{0%{background-position:0 0}100%{background-position:60px 60px}}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes slideDown{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(20px) scale(.95)}}
+
+        .anim-fade{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .anim-fade.visible{opacity:1;transform:translateY(0)}
+
+        /* ── Hero BG ── */
+        .hero-grid{
+            background-image:linear-gradient(rgba(0,102,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,102,255,.06) 1px,transparent 1px);
+            background-size:60px 60px;
+            animation:grid-move 8s linear infinite;
+        }
+        .hero-glow{background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(0,102,255,.15) 0%,transparent 70%)}
+        .scanline::after{content:'';position:absolute;left:0;width:100%;height:30%;background:linear-gradient(to bottom,transparent,rgba(0,212,255,.03),transparent);animation:scanline 6s linear infinite;pointer-events:none}
+
+        /* ── Botones ── */
+        .btn-primary{
+            background:linear-gradient(135deg,#0066FF,#0052CC);
+            position:relative;overflow:hidden;transition:all .3s;
+        }
+        .btn-primary::before{
+            content:'';position:absolute;inset:0;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+            background-size:200% 100%;animation:shimmer 3s ease infinite;
+        }
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(0,102,255,.45)}
+        .btn-outline{border:1px solid rgba(0,102,255,.5);transition:all .3s}
+        .btn-outline:hover{background:rgba(0,102,255,.1);border-color:#0066FF;transform:translateY(-2px)}
+
+        /* ── Service Cards ── */
+        .service-card{
+            background:linear-gradient(145deg,rgba(18,18,31,.8),rgba(13,13,24,.9));
+            border:1px solid rgba(30,30,53,.8);backdrop-filter:blur(10px);
+            transition:all .5s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;
+        }
+        .service-card::before{
+            content:'';position:absolute;top:0;left:0;right:0;height:2px;
+            background:linear-gradient(90deg,transparent,#0066FF,transparent);opacity:0;transition:opacity .5s;
+        }
+        .service-card:hover::before{opacity:1}
+        .service-card:hover{transform:translateY(-8px);border-color:rgba(0,102,255,.3);box-shadow:0 20px 60px rgba(0,102,255,.12)}
+        .service-card .icon-wrap{transition:all .5s}
+        .service-card:hover .icon-wrap{transform:scale(1.1);box-shadow:0 0 30px rgba(0,102,255,.3)}
+
+        /* ── Stat glow ── */
+        .stat-glow{text-shadow:0 0 30px rgba(0,102,255,.5)}
+
+        /* ── Chatbot ── */
+        .chat-btn{
+            width:64px;height:64px;border-radius:50%;
+            background:linear-gradient(135deg,#0066FF,#00D4FF);
+            box-shadow:0 4px 25px rgba(0,102,255,.5);transition:all .3s;position:relative;
+        }
+        .chat-btn:hover{transform:scale(1.1);box-shadow:0 6px 35px rgba(0,102,255,.7)}
+        .chat-btn .ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(0,102,255,.4);animation:pulse-ring 2s ease-out infinite}
+        .chat-window{
+            position:absolute;bottom:80px;right:0;width:380px;max-width:calc(100vw - 32px);
+            border-radius:20px;overflow:hidden;
+            background:#0D0D18;border:1px solid rgba(30,30,53,.9);
+            box-shadow:0 25px 80px rgba(0,0,0,.6),0 0 40px rgba(0,102,255,.08);
+            transform-origin:bottom right;
+        }
+        .chat-window.open{animation:slideUp .4s cubic-bezier(.16,1,.3,1) forwards}
+        .chat-window.close{animation:slideDown .3s cubic-bezier(.16,1,.3,1) forwards}
+        .chat-header{
+            background:linear-gradient(135deg,#0066FF,#0044BB);padding:16px 20px;
+            display:flex;align-items:center;gap:12px;
+        }
+        .chat-avatar{
+            width:38px;height:38px;border-radius:50%;
+            background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;
+            border:2px solid rgba(255,255,255,.3);position:relative;
+        }
+        .chat-avatar .dot{position:absolute;bottom:0;right:0;width:10px;height:10px;background:#00D4FF;border-radius:50%;border:2px solid #0052CC}
+        .chat-body{height:340px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+        .chat-body::-webkit-scrollbar{width:4px}
+        .chat-body::-webkit-scrollbar-thumb{background:rgba(0,102,255,.3);border-radius:2px}
+        .msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.5;animation:slideUp .3s ease}
+        .msg-bot{background:rgba(0,102,255,.12);border:1px solid rgba(0,102,255,.15);align-self:flex-start;border-bottom-left-radius:4px}
+        .msg-user{background:linear-gradient(135deg,#0066FF,#0052CC);align-self:flex-end;border-bottom-right-radius:4px}
+        .msg-options{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:85%}
+        .msg-opt{
+            padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;
+            border:1px solid rgba(0,102,255,.4);background:rgba(0,102,255,.08);
+            transition:all .3s;color:#00D4FF;
+        }
+        .msg-opt:hover{background:rgba(0,102,255,.2);border-color:#0066FF}
+        .typing-dots{display:flex;gap:4px;padding:10px 14px;align-self:flex-start}
+        .typing-dots span{width:6px;height:6px;border-radius:50%;background:#0066FF;animation:blink 1.4s infinite}
+        .typing-dots span:nth-child(2){animation-delay:.2s}
+        .typing-dots span:nth-child(3){animation-delay:.4s}
+        .chat-input-wrap{
+            padding:12px;border-top:1px solid rgba(30,30,53,.8);display:flex;gap:8px;align-items:center;
+            background:rgba(13,13,24,.9);
+        }
+        .chat-input{
+            flex:1;background:rgba(18,18,31,.8);border:1px solid rgba(30,30,53,.8);
+            border-radius:25px;padding:8px 16px;color:#fff;font-size:13px;outline:none;
+            font-family:'Inter',sans-serif;transition:border-color .3s;
+        }
+        .chat-input:focus{border-color:rgba(0,102,255,.5)}
+        .chat-input::placeholder{color:#555}
+        .chat-send{
+            width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0066FF,#00D4FF);
+            border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+            transition:all .3s;flex-shrink:0;
+        }
+        .chat-send:hover{transform:scale(1.1);box-shadow:0 0 15px rgba(0,102,255,.5)}
+
+        /* ── Navbar ── */
+        .nav-glass{background:rgba(6,6,12,.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(30,30,53,.5)}
+        .nav-link{position:relative;transition:color .3s}
+        .nav-link::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:#0066FF;transition:width .3s}
+        .nav-link:hover::after{width:100%}
+        .nav-link:hover{color:#00D4FF}
+
+        /* ── Process step connector ── */
+        .step-connector{position:relative}
+        .step-connector::after{
+            content:'';position:absolute;top:50%;right:-40px;width:40px;height:2px;
+            background:linear-gradient(90deg,#0066FF,transparent);
+        }
+        @media(max-width:768px){.step-connector::after{display:none}}
+
+        /* ── Orbit illustration ── */
+        .orbit-center{position:relative;width:300px;height:300px}
+        .orbit-ring{position:absolute;border:1px solid rgba(0,102,255,.15);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+        .orbit-dot{width:10px;height:10px;border-radius:50%;position:absolute;top:50%;left:50%;margin:-5px}
+        .orbit-dot-1{background:#0066FF;box-shadow:0 0 15px #0066FF;animation:orbit 8s linear infinite}
+        .orbit-dot-2{background:#00D4FF;box-shadow:0 0 15px #00D4FF;animation:orbit2 12s linear infinite}
+        .orbit-dot-3{background:#fff;box-shadow:0 0 10px #fff;animation:orbit3 6s linear infinite}
+
+        .glow-text{background:linear-gradient(135deg,#0066FF,#00D4FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .glow-border{border:1px solid transparent;background-clip:padding-box;position:relative}
+        .glow-border::before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(0,102,255,.4),rgba(0,212,255,.2),transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+        /* Mobile nav */
+        .mobile-menu{max-height:0;overflow:hidden;transition:max-height .4s ease}
+        .mobile-menu.open{max-height:400px}
+    </style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav class="nav-glass fixed top-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+        <a href="#" class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-eblue to-cyan-a flex items-center justify-center">
+                <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="font-space font-bold text-lg tracking-tight">Tech<span class="glow-text">Fix</span> Pro</span>
+        </a>
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#inicio" class="nav-link text-sm font-medium text-gray-300">Inicio</a>
+            <a href="#servicios" class="nav-link text-sm font-medium text-gray-300">Servicios</a>
+            <a href="#proceso" class="nav-link text-sm font-medium text-gray-300">Proceso</a>
+            <a href="#contacto" class="nav-link text-sm font-medium text-gray-300">Contacto</a>
+            <a href="#contacto" class="btn-primary text-sm font-medium px-5 py-2 rounded-full text-white inline-block">Solicitar Servicio</a>
+        </div>
+        <button id="menuToggle" class="md:hidden text-gray-300">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+    </div>
+    <div id="mobileMenu" class="mobile-menu md:hidden bg-dark-s border-t border-dark-border">
+        <div class="px-6 py-4 flex flex-col gap-4">
+            <a href="#inicio" class="text-gray-300 text-sm font-medium py-2 mobile-link">Inicio</a>
+            <a href="#servicios" class="text-gray-300 text-sm font-medium py-2 mobile-link">Servicios</a>
+            <a href="#proceso" class="text-gray-300 text-sm font-medium py-2 mobile-link">Proceso</a>
+            <a href="#contacto" class="text-gray-300 text-sm font-medium py-2 mobile-link">Contacto</a>
+            <a href="#contacto" class="btn-primary text-sm font-medium px-5 py-2.5 rounded-full text-white text-center">Solicitar Servicio</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section id="inicio" class="relative min-h-screen flex items-center overflow-hidden">
+    <!-- BG layers -->
+    <div class="absolute inset-0 hero-grid"></div>
+    <div class="absolute inset-0 hero-glow"></div>
+    <div class="absolute inset-0 scanline pointer-events-none"></div>
+    <!-- Decorative blobs -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-eblue/10 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-cyan-a/5 rounded-full blur-[150px]"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 pt-24 pb-16 grid lg:grid-cols-2 gap-12 items-center w-full">
+        <!-- Text -->
+        <div class="anim-fade" style="animation:fadeUp .9s ease forwards">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-eblue/30 bg-eblue/5 mb-6">
+                <span class="w-2 h-2 rounded-full bg-cyan-a animate-pulse"></span>
+                <span class="text-xs font-medium text-cyan-a tracking-wide">Disponible 24/7 — Soporte Inmediato</span>
+            </div>
+            <h1 class="font-space text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
+                Soluciones<br>
+                <span class="glow-text">tecnológicas</span><br>
+                a tu medida
+            </h1>
+            <p class="text-gray-400 text-lg sm:text-xl leading-relaxed max-w-lg mb-8">
+                Reparamos, optimizamos y protegemos tus equipos con tecnología de punta. Servicio profesional con garantía certificada.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="#contacto" class="btn-primary px-8 py-3.5 rounded-full text-white font-semibold text-sm inline-flex items-center gap-2">
+                    Solicitar Servicio
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="#servicios" class="btn-outline px-8 py-3.5 rounded-full text-white font-semibold text-sm inline-flex items-center gap-2">
+                    Ver Servicios
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                </a>
+            </div>
+            <!-- Mini stats -->
+            <div class="flex gap-8 mt-10 pt-8 border-t border-dark-border">
+                <div>
+                    <span class="font-space text-2xl font-bold stat-glow">2,500+</span>
+                    <p class="text-xs text-gray-500 mt-1">Equipos Reparados</p>
+                </div>
+                <div>
+                    <span class="font-space text-2xl font-bold stat-glow">99%</span>
+                    <p class="text-xs text-gray-500 mt-1">Clientes Satisfechos</p>
+                </div>
+                <div>
+                    <span class="font-space text-2xl font-bold stat-glow">&lt;2h</span>
+                    <p class="text-xs text-gray-500 mt-1">Tiempo de Respuesta</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Illustration -->
+        <div class="hidden lg:flex items-center justify-center anim-fade" style="animation:fadeUp 1.1s ease forwards">
+            <div class="orbit-center" style="animation:float 6s ease-in-out infinite">
+                <div class="orbit-ring" style="width:220px;height:220px"></div>
+                <div class="orbit-ring" style="width:320px;height:320px"></div>
+                <div class="orbit-ring" style="width:160px;height:160px"></div>
+                <!-- Center icon -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-2xl bg-gradient-to-br from-eblue to-cyan-a flex items-center justify-center shadow-lg shadow-eblue/30" style="animation:glow-pulse 3s ease infinite">
+                    <i data-lucide="monitor" class="w-10 h-10 text-white"></i>
+                </div>
+                <!-- Orbiting dots -->
+                <div class="orbit-dot orbit-dot-1"></div>
+                <div class="orbit-dot orbit-dot-2"></div>
+                <div class="orbit-dot orbit-dot-3"></div>
+                <!-- Floating labels -->
+                <div class="absolute -top-2 right-4 px-3 py-1.5 rounded-lg bg-dark-card/90 border border-dark-border text-xs text-cyan-a flex items-center gap-1.5" style="animation:float 4s ease-in-out infinite">
+                    <i data-lucide="shield-check" class="w-3 h-3"></i> Seguro
+                </div>
+                <div class="absolute bottom-4 -left-4 px-3 py-1.5 rounded-lg bg-dark-card/90 border border-dark-border text-xs text-cyan-a flex items-center gap-1.5" style="animation:float 5s ease-in-out infinite 1s">
+                    <i data-lucide="zap" class="w-3 h-3"></i> Rápido
+                </div>
+                <div class="absolute top-1/2 -right-8 px-3 py-1.5 rounded-lg bg-dark-card/90 border border-dark-border text-xs text-cyan-a flex items-center gap-1.5" style="animation:float 4.5s ease-in-out infinite .5s">
+                    <i data-lucide="wifi" class="w-3 h-3"></i> Conectado
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        <span class="text-[10px] text-gray-600 uppercase tracking-widest">Scroll</span>
+        <div class="w-5 h-8 rounded-full border border-gray-700 flex items-start justify-center p-1">
+            <div class="w-1 h-2 rounded-full bg-eblue animate-bounce"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ SERVICIOS ════════════ -->
+<section id="servicios" class="relative py-24 px-6">
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-eblue/30 to-transparent"></div>
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 anim-fade">
+            <span class="text-xs font-semibold text-cyan-a uppercase tracking-[.2em]">Nuestros Servicios</span>
+            <h2 class="font-space text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 tracking-tight">
+                Todo lo que tu equipo <span class="glow-text">necesita</span>
+            </h2>
+            <p class="text-gray-500 mt-4 max-w-xl mx-auto">Soluciones integrales de soporte técnico con la mejor tecnología y profesionales certificados.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Card 1 -->
+            <div class="service-card rounded-2xl p-8 anim-fade">
+                <div class="icon-wrap w-14 h-14 rounded-xl bg-gradient-to-br from-eblue/20 to-cyan-a/10 flex items-center justify-center mb-5 border border-eblue/20">
+                    <i data-lucide="wrench" class="w-6 h-6 text-eblue"></i>
+                </div>
+                <h3 class="font-space font-semibold text-lg mb-2">Reparación de Computadoras</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4">Diagnóstico y reparación de hardware y software. Desde pantallas rotas hasta fallas de sistema, lo resolvemos.</p>
+                <div class="flex items-center gap-1 text-cyan-a text-sm font-medium cursor-pointer group">
+                    <span>Más información</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="service-card rounded-2xl p-8 anim-fade" style="transition-delay:.1s">
+                <div class="icon-wrap w-14 h-14 rounded-xl bg-gradient-to-br from-eblue/20 to-cyan-a/10 flex items-center justify-center mb-5 border border-eblue/20">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-eblue"></i>
+                </div>
+                <h3 class="font-space font-semibold text-lg mb-2">Mantenimiento Preventivo y Correctivo</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4">Limpieza profunda, optimización de sistema y actualización de controladores para máxima rendimiento.</p>
+                <div class="flex items-center gap-1 text-cyan-a text-sm font-medium cursor-pointer group">
+                    <span>Más información</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="service-card rounded-2xl p-8 anim-fade" style="transition-delay:.2s">
+                <div class="icon-wrap w-14 h-14 rounded-xl bg-gradient-to-br from-eblue/20 to-cyan-a/10 flex items-center justify-center mb-5 border border-eblue/20">
+                    <i data-lucide="headphones" class="w-6 h-6 text-eblue"></i>
+                </div>
+                <h3 class="font-space font-semibold text-lg mb-2">Soporte Remoto</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4">Asistencia técnica en tiempo real sin salir de casa. Resolvemos tu problema de forma segura y rápida.</p>
+                <div class="flex items-center gap-1 text-cyan-a text-sm font-medium cursor-pointer group">
+                    <span>Más información</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="service-card rounded-2xl p-8 anim-fade" style="transition-delay:.3s">
+                <div class="icon-wrap w-14 h-14 rounded-xl bg-gradient-to-br from-eblue/20 to-cyan-a/10 flex items-center justify-center mb-5 border border-eblue/20">
+                    <i data-lucide="wifi" class="w-6 h-6 text-eblue"></i>
+                </div>
+                <h3 class="font-space font-semibold text-lg mb-2">Redes y Configuración WiFi</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4">Instalación, configuración y optimización de redes domésticas y empresariales. Conectividad sin interrupciones.</p>
+                <div class="flex items-center gap-1 text-cyan-a text-sm font-medium cursor-pointer group">
+                    <span>Más información</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="service-card rounded-2xl p-8 anim-fade" style="transition-delay:.4s">
+                <div class="icon-wrap w-14 h-14 rounded-xl bg-gradient-to-br from-eblue/20 to-cyan-a/10 flex items-center justify-center mb-5 border border-eblue/20">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-eblue"></i>
+                </div>
+                <h3 class="font-space font-semibold text-lg mb-2">Venta de Accesorios</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4">Componentes, periféricos y accesorios de alta calidad. Solo trabajamos con marcas confiables y garantía oficial.</p>
+                <div class="flex items-center gap-1 text-cyan-a text-sm font-medium cursor-pointer group">
+                    <span>Más información</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                </div>
+            </div>
+            <!-- Card 6 - CTA -->
+            <div class="rounded-2xl p-8 border border-dashed border-eblue/30 flex flex-col items-center justify-center text-center anim-fade" style="transition-delay:.5s;background:linear-gradient(135deg,rgba(0,102,255,.05),rgba(0,212,255,.03))">
+                <div class="w-14 h-14 rounded-full bg-eblue/10 flex items-center justify-center mb-4 border border-eblue/20">
+                    <i data-lucide="plus" class="w-6 h-6 text-eblue"></i>
+                </div>
+                <h3 class="font-space font-semibold text-lg mb-2">¿Necesitas algo más?</h3>
+                <p class="text-gray-500 text-sm mb-4">Contáctanos para soluciones personalizadas adaptadas a tus necesidades.</p>
+                <a href="#contacto" class="btn-outline px-5 py-2 rounded-full text-sm text-white font-medium inline-flex items-center gap-2">
+                    Cotizar Ahora <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ PROCESO ════════════ -->
+<section id="proceso" class="relative py-24 px-6 bg-dark-s">
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-dark-border to-transparent"></div>
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16 anim-fade">
+            <span class="text-xs font-semibold text-cyan-a uppercase tracking-[.2em]">Cómo Funciona</span>
+            <h2 class="font-space text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 tracking-tight">
+                Proceso <span class="glow-text">simple</span> y transparente
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10 md:gap-6">
+            <!-- Step 1 -->
+            <div class="text-center anim-fade step-connector">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-eblue to-eblue-dark flex items-center justify-center mx-auto mb-5 shadow-lg shadow-eblue/20">
+                    <i data-lucide="message-square" class="w-7 h-7 text-white"></i>
+                </div>
+                <div class="text-xs text-cyan-a font-semibold mb-2">PASO 01</div>
+                <h3 class="font-space font-semibold text-lg mb-2">Contáctanos</h3>
+                <p class="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">Escríbenos por WhatsApp, chat o formulario. Describe tu problema y te responderemos al instante.</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="text-center anim-fade step-connector" style="transition-delay:.15s">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-eblue to-eblue-dark flex items-center justify-center mx-auto mb-5 shadow-lg shadow-eblue/20">
+                    <i data-lucide="search" class="w-7 h-7 text-white"></i>
+                </div>
+                <div class="text-xs text-cyan-a font-semibold mb-2">PASO 02</div>
+                <h3 class="font-space font-semibold text-lg mb-2">Diagnóstico</h3>
+                <p class="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">Evaluamos tu equipo de forma remota o presencial. Te entregamos un diagnóstico con presupuesto sin compromiso.</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="text-center anim-fade" style="transition-delay:.3s">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-eblue to-eblue-dark flex items-center justify-center mx-auto mb-5 shadow-lg shadow-eblue/20">
+                    <i data-lucide="check-circle" class="w-7 h-7 text-white"></i>
+                </div>
+                <div class="text-xs text-cyan-a font-semibold mb-2">PASO 03</div>
+                <h3 class="font-space font-semibold text-lg mb-2">Solución Garantizada</h3>
+                <p class="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">Ejecutamos la reparación con piezas originales y te entregamos tu equipo funcionando con garantía por escrito.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ STATS BANNER ════════════ -->
+<section class="relative py-16 px-6 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-eblue/10 via-cyan-a/5 to-eblue/10"></div>
+    <div class="absolute inset-0 hero-grid opacity-40"></div>
+    <div class="relative max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="anim-fade">
+            <div class="font-space text-3xl sm:text-4xl font-bold stat-glow" data-count="2500">0</div>
+            <div class="text-xs text-gray-500 mt-2 uppercase tracking-wider">Equipos Reparados</div>
+        </div>
+        <div class="anim-fade" style="transition-delay:.1s">
+            <div class="font-space text-3xl sm:text-4xl font-bold stat-glow" data-count="12">0</div>
+            <div class="text-xs text-gray-500 mt-2 uppercase tracking-wider">Años de Experiencia</div>
+        </div>
+        <div class="anim-fade" style="transition-delay:.2s">
+            <div class="font-space text-3xl sm:text-4xl font-bold stat-glow" data-count="99">0</div>
+            <div class="text-xs text-gray-500 mt-2 uppercase tracking-wider">% Satisfacción</div>
+        </div>
+        <div class="anim-fade" style="transition-delay:.3s">
+            <div class="font-space text-3xl sm:text-4xl font-bold stat-glow" data-count="24">0</div>
+            <div class="text-xs text-gray-500 mt-2 uppercase tracking-wider">Soporte 24/7</div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ CONTACTO ════════════ -->
+<section id="contacto" class="relative py-24 px-6 bg-dark-s">
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-dark-border to-transparent"></div>
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+        <div class="anim-fade">
+            <span class="text-xs font-semibold text-cyan-a uppercase tracking-[.2em]">Contáctanos</span>
+            <h2 class="font-space text-3xl sm:text-4xl font-bold mt-3 tracking-tight mb-4">
+                ¿Listo para <span class="glow-text">solucionar</span> tu equipo?
+            </h2>
+            <p class="text-gray-500 leading-relaxed mb-8">Completa el formulario y un técnico especializado se pondrá en contacto contigo en menos de 2 horas. También puedes escribirnos directamente por WhatsApp.</p>
+
+            <div class="space-y-5">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-eblue/10 flex items-center justify-center flex-shrink-0 border border-eblue/20">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-eblue"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-sm">Ubicación</h4>
+                        <p class="text-gray-500 text-sm">Av. Tecnología 1024, Centro Digital, CDMX</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-eblue/10 flex items-center justify-center flex-shrink-0 border border-eblue/20">
+                        <i data-lucide="phone" class="w-4 h-4 text-eblue"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-sm">Teléfono / WhatsApp</h4>
+                        <p class="text-gray-500 text-sm">+52 55 1234 5678</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-eblue/10 flex items-center justify-center flex-shrink-0 border border-eblue/20">
+                        <i data-lucide="mail" class="w-4 h-4 text-eblue"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-sm">Email</h4>
+                        <p class="text-gray-500 text-sm">soporte@techfixpro.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="https://wa.me/5215512345678?text=Hola%2C%20necesito%20soporte%20técnico" target="_blank" class="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-600 hover:bg-green-500 text-white font-semibold text-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-600/30">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Escribir por WhatsApp
+            </a>
+        </div>
+
+        <!-- Form -->
+        <div class="anim-fade" style="transition-delay:.15s">
+            <form id="contactForm" class="service-card rounded-2xl p-8 space-y-5">
+                <div class="grid sm:grid-cols-2 gap-5">
+                    <div>
+                        <label class="text-xs font-medium text-gray-400 mb-1.5 block">Nombre completo</label>
+                        <input type="text" required placeholder="Tu nombre" class="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-gray-600 focus:border-eblue/50 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-400 mb-1.5 block">Teléfono</label>
+                        <input type="tel" required placeholder="+52 55 1234 5678" class="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-gray-600 focus:border-eblue/50 focus:outline-none transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-gray-400 mb-1.5 block">Email</label>
+                    <input type="email" required placeholder="tu@email.com" class="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-gray-600 focus:border-eblue/50 focus:outline-none transition">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-gray-400 mb-1.5 block">Servicio requerido</label>
+                    <select required class="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-3 text-sm text-gray-400 focus:border-eblue/50 focus:outline-none transition appearance-none">
+                        <option value="">Selecciona un servicio</option>
+                        <option>Reparación de Computadoras</option>
+                        <option>Mantenimiento Preventivo</option>
+                        <option>Mantenimiento Correctivo</option>
+                        <option>Soporte Remoto</option>
+                        <option>Redes y Configuración WiFi</option>
+                        <option>Venta de Accesorios</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-gray-400 mb-1.5 block">Describe tu problema</label>
+                    <textarea rows="4" required placeholder="Cuéntanos qué sucede con tu equipo..." class="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-3 text-sm text-white placeholder:text-gray-600 focus:border-eblue/50 focus:outline-none transition resize-none"></textarea>
+                </div>
+                <button type="submit" class="btn-primary w-full py-3.5 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    Enviar Solicitud
+                </button>
+                <div id="formMsg" class="hidden text-center text-sm py-2 rounded-lg"></div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer class="py-12 px-6 border-t border-dark-border">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-10 mb-10">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-eblue to-cyan-a flex items-center justify-center">
+                        <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="font-space font-bold text-lg">Tech<span class="glow-text">Fix</span> Pro</span>
+                </div>
+                <p class="text-gray-600 text-sm leading-relaxed max-w-sm">Servicios técnicos profesionales de informática. Tecnología, confianza e innovación al servicio de tus equipos.</p>
+            </div>
+            <div>
+                <h4 class="font-space font-semibold text-sm mb-4">Servicios</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li><a href="#servicios" class="hover:text-cyan-a transition">Reparación</a></li>
+                    <li><a href="#servicios" class="hover:text-cyan-a transition">Mantenimiento</a></li>
+                    <li><a href="#servicios" class="hover:text-cyan-a transition">Soporte Remoto</a></li>
+                    <li><a href="#servicios" class="hover:text-cyan-a transition">Redes WiFi</a></li>
+                    <li><a href="#servicios" class="hover:text-cyan-a transition">Accesorios</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-space font-semibold text-sm mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li><a href="#" class="hover:text-cyan-a transition">Aviso de Privacidad</a></li>
+                    <li><a href="#" class="hover:text-cyan-a transition">Términos de Servicio</a></li>
+                    <li><a href="#" class="hover:text-cyan-a transition">Política de Garantía</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-dark-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-gray-700">© 2025 TechFix Pro. Todos los derechos reservados.</p>
+            <div class="flex items-center gap-4">
+                <a href="#" class="w-8 h-8 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-gray-600 hover:text-cyan-a hover:border-eblue/30 transition">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-gray-600 hover:text-cyan-a hover:border-eblue/30 transition">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="#" class="w-8 h-8 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-gray-600 hover:text-cyan-a hover:border-eblue/30 transition">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ════════════ CHATBOT ════════════ -->
+<div id="chatbot" class="fixed bottom-6 right-6 z-50">
+    <div id="chatWindow" class="chat-window hidden">
+        <div class="chat-header">
+            <div class="chat-avatar">
+                <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                <div class="dot"></div>
+            </div>
+            <div class="flex-1">
+                <div class="text-sm font-semibold text-white">TechFix Assistant</div>
+                <div class="text-[10px] text-cyan-a/80 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span> En línea — IA Activa
+                </div>
+            </div>
+            <button id="chatClose" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                <i data-lucide="x" class="w-4 h-4 text-white"></i>
+            </button>
+        </div>
+        <div id="chatBody" class="chat-body"></div>
+        <div class="chat-input-wrap">
+            <input id="chatInput" type="text" class="chat-input" placeholder="Escribe tu mensaje...">
+            <button id="chatSend" class="chat-send">
+                <i data-lucide="send" class="w-4 h-4 text-white"></i>
+            </button>
+        </div>
+    </div>
+    <button id="chatToggle" class="chat-btn flex items-center justify-center">
+        <div class="ring"></div>
+        <i data-lucide="message-circle" class="w-7 h-7 text-white" id="chatIconOpen"></i>
+    </button>
+</div>
+
+<!-- ════════════ SCRIPTS ════════════ -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Lucide Icons ──
+    lucide.createIcons();
+
+    // ── Mobile Menu ──
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+    // ── Scroll Animations ──
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.anim-fade').forEach(el => observer.observe(el));
+
+    // ── Counter Animation ──
+    const countObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                const target = +e.target.dataset.count;
+                const duration = 2000;
+                const start = performance.now();
+                const animate = (now) => {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const ease = 1 - Math.pow(1 - progress, 3);
+                    e.target.textContent = Math.floor(ease * target).toLocaleString();
+                    if (progress < 1) requestAnimationFrame(animate);
+                    else e.target.textContent = target.toLocaleString() + (target === 99 ? '%' : target === 24 ? '/7' : '+');
+                };
+                requestAnimationFrame(animate);
+                countObserver.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
+
+    // ── Contact Form ──
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const msg = document.getElementById('formMsg');
+        msg.className = 'text-center text-sm py-2 rounded-lg bg-green-500/10 text-green-400 border border-green-500/20';
+        msg.textContent = '✓ ¡Solicitud enviada! Nos pondremos en contacto pronto.';
+        msg.classList.remove('hidden');
+        this.reset();
+        setTimeout(() => msg.classList.add('hidden'), 5000);
+    });
+
+    // ── Navbar Scroll ──
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+        nav.style.borderBottomColor = window.scrollY > 50 ? 'rgba(30,30,53,0.8)' : 'rgba(30,30,53,0.3)';
+    });
+
+    // ════════════ CHATBOT LOGIC ════════════
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatBody = document.getElementById('chatBody');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    let chatOpen = false;
+
+    // Chat knowledge base
+    const services = {
+        'reparacion': { name: 'Reparación de Computadoras', price: 'Desde $500 MXN', detail: 'Incluye diagnóstico, reparación de hardware/software, cambio de pantalla, batería, teclado y más.' },
+        'mantenimiento-p': { name: 'Mantenimiento Preventivo', price: 'Desde $350 MXN', detail: 'Limpieza interna, cambio de pasta térmica, optimización de sistema y actualización de drivers.' },
+        'mantenimiento-c': { name: 'Mantenimiento Correctivo', price: 'Desde $450 MXN', detail: 'Reparación de fallas existentes, eliminación de virus, recuperación de datos y reparación de sistema operativo.' },
+        'soporte-remoto': { name: 'Soporte Remoto', price: 'Desde $250 MXN', detail: 'Asistencia técnica en tiempo real mediante conexión segura. Ideal para problemas de software.' },
+        'redes-wifi': { name: 'Redes y Configuración WiFi', price: 'Desde $400 MXN', detail: 'Instalación y configuración de routers, extensores, redes mesh y seguridad de red.' },
+        'accesorios': { name: 'Venta de Accesorios', price: 'Varía según producto', detail: 'Cargadores, cables, mouse, teclados, discos SSD, RAM y más. Todas con garantía.' }
+    };
+
+    const chatFlow = {
+        welcome: {
+            bot: '¡Hola! 👋 Soy el asistente virtual de **TechFix Pro**. Estoy aquí para ayudarte.',
+            options: [
+                { text: '🔧 Cotizar servicio', next: 'quote' },
+                { text: '💬 Hablar con WhatsApp', next: 'whatsapp' },
+                { text: '📋 Ver servicios', next: 'list_services' },
+                { text: '📍 Ubicación y horario', next: 'location' }
+            ]
+        },
+        quote: {
+            bot: '¿Qué servicio deseas cotizar? Selecciona una opción:',
+            options: [
+                { text: 'Reparación de PC', next: 'svc_reparacion' },
+                { text: 'Mantenimiento Preventivo', next: 'svc_mantenimiento-p' },
+                { text: 'Mantenimiento Correctivo', next: 'svc_mantenimiento-c' },
+                { text: 'Soporte Remoto', next: 'svc_soporte-remoto' },
+                { text: 'Redes y WiFi', next: 'svc_redes-wifi' },
+                { text: 'Accesorios', next: 'svc_accesorios' }
+            ]
+        },
+        list_services: {
+            bot: 'Nuestros servicios principales son:\n\n🔧 Reparación de Computadoras\n🛡️ Mantenimiento Preventivo\n⚙️ Mantenimiento Correctivo\n🎧 Soporte Remoto\n📡 Redes y WiFi\n🛒 Venta de Accesorios\n\n¿Te gustaría cotizar alguno?',
+            options: [
+                { text: 'Sí, cotizar', next: 'quote' },
+                { text: 'Hablar por WhatsApp', next: 'whatsapp' }
+            ]
+        },
+        whatsapp: {
+            bot: '¡Perfecto! Puedes contactarnos directamente por WhatsApp para atención personalizada. 📱',
+            action: 'whatsapp',
+            options: [
+                { text: 'Abrir WhatsApp', next: 'open_wa' },
+                { text: 'Volver al menú', next: 'welcome' }
+            ]
+        },
+        location: {
+            bot: '📍 **Ubicación:** Av. Tecnología 1024, Centro Digital, CDMX\n\n🕐 **Horario:**\nLunes a Viernes: 9:00 - 20:00\nSábados: 10:00 - 16:00\nDomingos: Solo soporte remoto\n\n📞 **Emergencias:** Disponibles 24/7',
+            options: [
+                { text: 'Cotizar servicio', next: 'quote' },
+                { text: 'Hablar por WhatsApp', next: 'whatsapp' }
+            ]
+        }
+    };
+
+    // Generate service responses dynamically
+    Object.keys(services).forEach(key => {
+        const svc = services[key];
+        chatFlow['svc_' + key] = {
+            bot: `**${svc.name}**\n\n💰 ${svc.price}\n📝 ${svc.detail}\n\n¿Deseas agendar este servicio?`,
+            options: [
+                { text: '✅ Sí, agendar', next: 'schedule' },
+                { text: '💬 Por WhatsApp', next: 'whatsapp' },
+                { text: '↩️ Otro servicio', next: 'quote' }
+            ]
+        };
+    });
+
+    chatFlow['schedule'] = {
+        bot: '¡Excelente! Para agendar tu servicio, por favor contáctanos por WhatsApp o completa el formulario de contacto. Un técnico se comunicará contigo en menos de 2 horas. 🚀',
+        options: [
+            { text: 'Abrir WhatsApp', next: 'open_wa' },
+            { text: 'Ir al formulario', next: 'form' },
+            { text: 'Volver al menú', next: 'welcome' }
+        ]
+    };
+
+    chatFlow['form'] = {
+        bot: 'Puedes completar nuestro formulario de contacto en la sección de abajo. ↓\n\nO si prefieres, escríbenos por WhatsApp para respuesta inmediata.',
+        action: 'scroll_form',
+        options: [
+            { text: 'Abrir WhatsApp', next: 'open_wa' },
+            { text: 'Volver al menú', next: 'welcome' }
+            ]
+    };
+
+    function addMsg(text, type = 'bot') {
+        const div = document.createElement('div');
+        div.className = `msg msg-${type}`;
+        // Simple markdown bold
+        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        chatBody.appendChild(div);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function addOptions(options) {
+        const wrap = document.createElement('div');
+        wrap.className = 'msg-options';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'msg-opt';
+            btn.textContent = opt.text;
+            btn.addEventListener('click', () => {
+                // Remove options after click
+                wrap.remove();
+                addMsg(opt.text, 'user');
+                handleFlow(opt.next);
+            });
+            wrap.appendChild(btn);
+        });
+        chatBody.appendChild(wrap);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTyping() {
+        const dots = document.createElement('div');
+        dots.className = 'typing-dots';
+        dots.id = 'typing';
+        dots.innerHTML = '<span></span><span></span><span></span>';
+        chatBody.appendChild(dots);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function removeTyping() {
+        const t = document.getElementById('typing');
+        if (t) t.remove();
+    }
+
+    function handleFlow(node) {
+        const flow = chatFlow[node];
+        if (!flow) return;
+
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            addMsg(flow.bot);
+
+            if (flow.action === 'whatsapp') {
+                // Will open on option click
+            }
+            if (flow.action === 'scroll_form') {
+                setTimeout(() => {
+                    document.getElementById('contacto').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+
+            if (flow.options) {
+                setTimeout(() => addOptions(flow.options), 300);
+            }
+        }, 800 + Math.random() * 600);
+    }
+
+    function toggleChat() {
+        chatOpen = !chatOpen;
+        if (chatOpen) {
+            chatWindow.classList.remove('hidden', 'close');
+            chatWindow.classList.add('open');
+            if (chatBody.children.length === 0) {
+                handleFlow('welcome');
+            }
+        } else {
+            chatWindow.classList.remove('open');
+            chatWindow.classList.add('close');
+            setTimeout(() => chatWindow.classList.add('hidden'), 300);
+        }
+    }
+
+    chatToggle.addEventListener('click', toggleChat);
+    chatClose.addEventListener('click', toggleChat);
+
+    // Send message
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        chatInput.value = '';
+        addMsg(text, 'user');
+
+        // Simple keyword matching
+        const lower = text.toLowerCase();
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            if (lower.includes('precio') || lower.includes('costo') || lower.includes('cotizar') || lower.includes('cuánto')) {
+                handleFlow('quote');
+            } else if (lower.includes('whatsapp') || lower.includes('wasap') || lower.includes('telefono')) {
+                handleFlow('whatsapp');
+            } else if (lower.includes('reparar') || lower.includes('reparación') || lower.includes('arreglar')) {
+                handleFlow('svc_reparacion');
+            } else if (lower.includes('mantenimiento') && (lower.includes('preventivo') || lower.includes('limpieza'))) {
+                handleFlow('svc_mantenimiento-p');
+            } else if (lower.includes('mantenimiento')) {
+                handleFlow('svc_mantenimiento-c');
+            } else if (lower.includes('remoto') || lower.includes('online') || lower.includes('línea')) {
+                handleFlow('svc_soporte-remoto');
+            } else if (lower.includes('wifi') || lower.includes('red') || lower.includes('internet') || lower.includes('router')) {
+                handleFlow('svc_redes-wifi');
+            } else if (lower.includes('accesorio') || lower.includes('comprar') || lower.includes('venta')) {
+                handleFlow('svc_accesorios');
+            } else if (lower.includes('ubicación') || lower.includes('dirección') || lower.includes('horario') || lower.includes('dónde')) {
+                handleFlow('location');
+            } else if (lower.includes('gracias') || lower.includes('thanks')) {
+                addMsg('¡De nada! 😊 Estoy aquí para lo que necesites. Si tienes otra duda, no dudes en escribirme.');
+                setTimeout(() => addOptions([
+                    { text: 'Cotizar servicio', next: 'quote' },
+                    { text: 'Hablar por WhatsApp', next: 'whatsapp' }
+                ]), 300);
+            } else {
+                addMsg('Gracias por tu mensaje. Para poder ayudarte mejor, te sugiero las siguientes opciones:');
+                setTimeout(() => addOptions([
+                    { text: '🔧 Cotizar servicio', next: 'quote' },
+                    { text: '💬 Hablar por WhatsApp', next: 'whatsapp' },
+                    { text: '📋 Ver servicios', next: 'list_services' }
+                ]), 300);
+            }
+        }, 600 + Math.random() * 500);
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+    // Handle special actions from option clicks
+    const origAddOptions = addOptions;
+    // We patch into the flow handler for open_wa and scroll_form
+    const origHandleFlow = handleFlow;
+    // Already handled inside handleFlow via flow.action
+
+    // Override the option click to handle open_wa
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('msg-opt') && e.target.textContent === 'Abrir WhatsApp') {
+            window.open('https://wa.me/5215512345678?text=Hola%2C%20necesito%20soporte%20técnico', '_blank');
+        }
+    });
+
+});
+</script>
+</body>
+</html>
